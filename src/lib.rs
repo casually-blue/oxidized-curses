@@ -1,3 +1,5 @@
+mod ncurses;
+pub use crate::ncurses::*;
 #[cfg(test)]
 mod tests {
     #[test]
