@@ -31,7 +31,7 @@ impl Window for MainWindow {
 impl MainWindow {
     pub fn init() -> Self {
         initscr();
-        set_cbreak(false);
+        set_cbreak(true);
         set_echo(false);
         curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
         MainWindow {
