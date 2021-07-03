@@ -17,7 +17,7 @@ pub trait Window {
 }
 
 pub enum CursorState {
-    Visibile,
+    Visible,
     VeryVisible,
     Invisible,
 }
@@ -26,7 +26,7 @@ pub fn convert_cursor_visibility(vis: CURSOR_VISIBILITY) -> CursorState {
     use CURSOR_VISIBILITY::*;
     use CursorState::*;
     match vis {
-        CURSOR_VISIBLE => Visibile,
+        CURSOR_VISIBLE => Visible,
         CURSOR_INVISIBLE => Invisible,
         CURSOR_VERY_VISIBLE => VeryVisible,
     }
@@ -37,7 +37,7 @@ pub fn get_curses_curs_visibility(vis: CursorState) -> CURSOR_VISIBILITY {
     use CursorState::*;
 
     match vis {
-        Visibile => CURSOR_VISIBLE,
+        Visible => CURSOR_VISIBLE,
         Invisible => CURSOR_INVISIBLE,
         VeryVisible => CURSOR_VERY_VISIBLE,
     }
@@ -50,9 +50,6 @@ pub trait MovableWindow {
 }
 
 pub struct MainWindow {
-    initial_cursor: CURSOR_VISIBILITY,
-    initial_echo: bool,
-    initial_cbreak: bool,
 }
 
 impl Window for MainWindow {
@@ -66,11 +63,7 @@ impl MainWindow {
         set_cbreak(true);
         set_echo(false);
         curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
-        MainWindow {
-            initial_cursor: CURSOR_VISIBILITY::CURSOR_VISIBLE,
-            initial_echo: true,
-            initial_cbreak: true,
-        }
+        MainWindow {}
     }
 }
 
@@ -88,7 +81,17 @@ pub fn set_echo(echo_val: bool){
     }
 }
 
+// tell ncurses whether to get raw input or not
+pub fn set_raw(raw_val: bool) {
+    if raw_val {
+        raw();
+    } else {
+        noraw();
+    }
+}
+
 // set whether ncurses gets raw input or not
+// minus control characters
 fn set_cbreak(cbreak_val: bool){
     if cbreak_val {
         cbreak();
@@ -98,12 +101,12 @@ fn set_cbreak(cbreak_val: bool){
 }
 
 impl Drop for MainWindow {
-    // reset terminal to initial state
+    // reset terminal to reasonable state
     // and end ncurses
     fn drop(&mut self) {
-        set_echo(self.initial_echo);
-        set_cbreak(self.initial_cbreak);
-        curs_set(self.initial_cursor);
+        set_echo(true);
+        set_cbreak(false);
+        set_cursor(CursorState::Visible);
 
         endwin();
     }
