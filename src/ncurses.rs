@@ -16,6 +16,35 @@ pub trait Window {
 
 }
 
+pub enum CursorState {
+    Visibile,
+    VeryVisible,
+    Invisible,
+}
+
+pub fn convert_cursor_visibility(vis: CURSOR_VISIBILITY) -> CursorState {
+    use CURSOR_VISIBILITY::*;
+    use CursorState::*;
+    match vis {
+        CURSOR_VISIBLE => Visibile,
+        CURSOR_INVISIBLE => Invisible,
+        CURSOR_VERY_VISIBLE => VeryVisible,
+    }
+}
+
+pub fn get_curses_curs_visibility(vis: CursorState) -> CURSOR_VISIBILITY {
+    use CURSOR_VISIBILITY::*;
+    use CursorState::*;
+
+    match vis {
+        Visibile => CURSOR_VISIBLE,
+        Invisible => CURSOR_INVISIBLE,
+        VeryVisible => CURSOR_VERY_VISIBLE,
+    }
+}
+
+
+
 pub trait MovableWindow {
     fn movew(&mut self, x: u32, y: u32);
 }
@@ -45,9 +74,13 @@ impl MainWindow {
     }
 }
 
+pub fn set_cursor(state: CursorState) {
+    curs_set(get_curses_curs_visibility(state));
+}
+
 // tell ncurses whether to echo typed
 // characters to the screen
-fn set_echo(echo_val: bool){
+pub fn set_echo(echo_val: bool){
     if echo_val {
         echo();
     } else {
