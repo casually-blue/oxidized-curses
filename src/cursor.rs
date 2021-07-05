@@ -7,8 +7,8 @@ pub enum CursorState {
 }
 
 fn get_curses_curs_visibility(vis: CursorState) -> CURSOR_VISIBILITY {
-    use CURSOR_VISIBILITY::*;
     use CursorState::*;
+    use CURSOR_VISIBILITY::*;
 
     match vis {
         Visible => CURSOR_VISIBLE,
@@ -20,5 +20,3 @@ fn get_curses_curs_visibility(vis: CursorState) -> CURSOR_VISIBILITY {
 pub fn set_cursor(state: CursorState) {
     ncurses::curs_set(get_curses_curs_visibility(state));
 }
-
-

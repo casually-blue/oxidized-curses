@@ -11,7 +11,6 @@ pub struct ScreenRect {
     /// The upper left corner of the rectangle
     pub start: ScreenPoint,
 
-
     /// The height and width of the rectangle
     pub offset: ScreenPoint,
 }
