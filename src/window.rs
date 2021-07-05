@@ -1,7 +1,8 @@
 use ncurses::*;
 
-use crate::io::*;
+use crate::io_attrs::*;
 use crate::cursor::*;
+use crate::utils::ScreenRect;
 
 // default printing functions for ncurses
 pub trait Window {
@@ -12,11 +13,6 @@ pub trait Window {
     fn print(&mut self, text: &str) {
         addstr(text);
     }
-
-    fn read_char(&self) -> char {
-        getch() as u8 as char
-    }
-
 }
 pub trait MovableWindow {
     fn movew(&mut self, x: u32, y: u32);
@@ -38,6 +34,10 @@ impl MainWindow {
         curs_set(CURSOR_VISIBILITY::CURSOR_INVISIBLE);
         MainWindow {}
     }
+
+    pub fn read_char(&self) -> char {
+        getch() as u8 as char
+    }
 }
 
 impl Drop for MainWindow {
@@ -57,12 +57,25 @@ pub struct SubWindow {
     this: WINDOW,
 }
 
-impl SubWindow {
-    // create the new subwindow and get its information
-    pub fn init(x: u32, y: u32, start_x: u32, start_y: u32) -> Self {
-        let win = newwin(y as i32,x as i32, start_y as i32, start_x as i32);
+pub struct SubWindowError {
+    pub rect: ScreenRect,
+}
 
-        SubWindow { this: win }
+impl SubWindow {
+    /// Create a new subwindow from the rectangle given
+    pub fn init(rect: ScreenRect) -> Result<Self,SubWindowError>{
+        let win = newwin(
+            rect.offset.y as i32,
+            rect.offset.x as i32,
+            rect.start.y as i32,
+            rect.start.x as i32
+        );
+
+        if win == 0 as *mut i8 {
+            Err(SubWindowError { rect })
+        } else {
+            Ok(SubWindow { this: win })
+        }
     }
 }
 

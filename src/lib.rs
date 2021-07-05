@@ -1,7 +1,9 @@
 mod window;
 mod cursor;
-mod io;
+mod io_attrs;
+mod utils;
 
 pub use window::*;
 pub use cursor::*;
-pub use io::*;
+pub use io_attrs::*;
+pub use utils::*;
