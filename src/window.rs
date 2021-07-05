@@ -2,18 +2,22 @@ use ncurses::*;
 
 use crate::io_attrs::*;
 use crate::cursor::*;
-use crate::utils::ScreenRect;
+use crate::utils::{ScreenRect,ScreenPoint};
 
 // default printing functions for ncurses
 pub trait Window {
-    fn mv_print(&mut self, x: u32, y: u32, text: &str) {
-        mvaddstr(y as i32, x as i32, text);
+    /// Move the cursor to specific coordinates and print a string
+    fn move_print(&mut self, point: ScreenPoint, text: &str) {
+        mvaddstr(point.y as i32, point.x as i32, text);
     }
 
+    /// Print a string at the current cursor coordinates
     fn print(&mut self, text: &str) {
         addstr(text);
     }
 }
+
+/// A window that isn't fixed in screen space
 pub trait MovableWindow {
     fn movew(&mut self, x: u32, y: u32);
 }
@@ -24,9 +28,9 @@ pub struct MainWindow {
 impl Window for MainWindow {
 }
 
+/// The fullscreen ncurses window
 impl MainWindow {
-    // initialize a reasonable starting
-    // state for the main window
+    /// Set up the window with some basic defaults
     pub fn init() -> Self {
         initscr();
         set_cbreak(true);
@@ -35,14 +39,14 @@ impl MainWindow {
         MainWindow {}
     }
 
+    /// Get a character from stdin
     pub fn read_char(&self) -> char {
         getch() as u8 as char
     }
 }
 
 impl Drop for MainWindow {
-    // reset terminal to reasonable state
-    // and end ncurses
+    /// Reset the tty to a reasonable state and clean up curses
     fn drop(&mut self) {
         set_echo(true);
         set_cbreak(false);
@@ -52,13 +56,16 @@ impl Drop for MainWindow {
     }
 }
 
+/// A window inside the main window
 pub struct SubWindow {
     // the identifier in ncurses for the window
     this: WINDOW,
 }
 
-pub struct SubWindowError {
-    pub rect: ScreenRect,
+/// Subwindow Creation Error
+pub enum SubWindowError {
+    CoordinateError(ScreenRect),
+    OtherError,
 }
 
 impl SubWindow {
@@ -72,7 +79,7 @@ impl SubWindow {
         );
 
         if win == 0 as *mut i8 {
-            Err(SubWindowError { rect })
+            Err(SubWindowError::CoordinateError(rect))
         } else {
             Ok(SubWindow { this: win })
         }
@@ -80,19 +87,19 @@ impl SubWindow {
 }
 
 impl Window for SubWindow {
-    // move the cursor and then print a string to the screen
-    fn mv_print(&mut self, x: u32, y: u32, text: &str) {
-        mvwaddstr(self.this, y as i32, x as i32, text);
+    /// Move the cursor and print a string at specific coordinates on the subwindow
+    fn move_print(&mut self, point: ScreenPoint, text: &str) {
+        mvwaddstr(self.this, point.y as i32, point.x as i32, text);
     }
 
-    // print a string to the screen at the current cursor position
+    /// Print a string at the curent subwindow cursor position
     fn print(&mut self, text: &str) {
         waddstr(self.this, text);
     }
 }
 
 impl Drop for SubWindow {
-    // delete the ncurses window instance
+    /// Free the internal subwindow pointer
     fn drop(&mut self) {
         delwin(self.this);
     }
