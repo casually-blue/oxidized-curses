@@ -1,9 +1,7 @@
-mod ncurses;
-pub use crate::ncurses::*;
-#[cfg(test)]
-mod tests {
-    #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
-    }
-}
+mod window;
+mod cursor;
+mod io;
+
+pub use window::*;
+pub use cursor::*;
+pub use io::*;

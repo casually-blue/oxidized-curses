@@ -1,7 +1,7 @@
 use ncurses::*;
 
-use crate::ncurses::io::*;
-use crate::ncurses::cursor::*;
+use crate::io::*;
+use crate::cursor::*;
 
 // default printing functions for ncurses
 pub trait Window {
