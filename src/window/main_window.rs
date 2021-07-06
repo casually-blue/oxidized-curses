@@ -20,6 +20,10 @@ impl Window for MainWindow {
     fn get_char(&mut self) -> char {
         ncurses::getch() as u8 as char
     }
+
+    fn enable_keypad(&mut self, enable: bool) {
+        ncurses::keypad(ncurses::stdscr(), enable);
+    }
 }
 
 /// The fullscreen ncurses window

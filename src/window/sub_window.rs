@@ -49,6 +49,10 @@ impl Window for SubWindow {
     fn get_char(&mut self) -> char {
         ncurses::wgetch(self.this) as u8 as char
     }
+
+    fn enable_keypad(&mut self, enable: bool) {
+        ncurses::keypad(self.this, enable);
+    }
 }
 
 impl MoveableWindow for SubWindow {
