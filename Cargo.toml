@@ -1,6 +1,6 @@
 [package]
 name = "oxidized-curses"
-version = "0.1.2"
+version = "0.1.3"
 edition = "2018"
 description = "A rusty ncurses binding"
 license = "GPL-3.0"
