@@ -6,11 +6,7 @@ pub struct MainWindow {}
 
 impl Window for MainWindow {
     fn move_print(&mut self, point: crate::utils::ScreenPoint, text: &str) {
-        ncurses::mvaddstr(
-            point.y as i32,
-            point.x as i32,
-            text
-        );
+        ncurses::mvaddstr(point.y as i32, point.x as i32, text);
     }
 
     fn print(&mut self, text: &str) {

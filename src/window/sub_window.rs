@@ -1,5 +1,5 @@
 use crate::utils::{ScreenPoint, ScreenRect};
-use crate::window::{Window,MoveableWindow};
+use crate::window::{MoveableWindow, Window};
 
 /// A window inside the main window
 pub struct SubWindow {
