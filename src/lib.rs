@@ -17,6 +17,6 @@ pub mod color;
 mod tests {
     #[test]
     fn init_curses(){
-        let w = crate::window::MainWindow::init();
+        let _w = crate::window::MainWindow::init();
     }
 }

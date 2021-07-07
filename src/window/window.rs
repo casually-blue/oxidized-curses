@@ -13,7 +13,7 @@ pub trait Window {
     fn get_char(&mut self) -> char;
 
     fn has_colors() -> bool {
-        return ncurses::has_colors();
+        ncurses::has_colors()
     }
 
     fn enable_keypad(&mut self, enable: bool);
