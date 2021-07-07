@@ -23,7 +23,7 @@ impl SubWindow {
             rect.start.x as i32,
         );
 
-        if win == std::ptr::null_mut::<i8>() {
+        if win.is_null() {
             Err(SubWindowError::CoordinateError(rect))
         } else {
             Ok(SubWindow { this: win })
