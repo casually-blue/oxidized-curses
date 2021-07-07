@@ -2,7 +2,9 @@ use crate::cursor::*;
 use crate::io_attrs::*;
 use crate::window::Window;
 
-pub struct MainWindow {}
+pub struct MainWindow {
+    _private: ()
+}
 
 impl Window for MainWindow {
     fn move_print(&mut self, point: crate::utils::ScreenPoint, text: &str) {
@@ -34,7 +36,7 @@ impl MainWindow {
         set_cbreak(true);
         set_echo(false);
         set_cursor(CursorState::Invisible);
-        MainWindow {}
+        MainWindow {_private: ()}
     }
 }
 

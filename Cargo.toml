@@ -10,3 +10,7 @@ repository = "https://github.com/casually-blue/oxidized-curses"
 
 [dependencies]
 ncurses = "5.101.0"
+displaydoc = "0.2"
+thiserror = "1.0"
+anyhow = "1.0"
+maplit = "1.0"
